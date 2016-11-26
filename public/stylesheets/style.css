@@ -1,21 +1,15 @@
+
 body {
-    padding: 50px;
+    padding: 5%;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: rgba(0%, 0%, 0%, 0.4)
 }
 
 a {
     color: #00B7FF;
 }
 
-
-/*graph*/
-
-.chart rect {
-  fill: steelblue;
-}
-
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: end;
+.graph {
+  height: 20vh;
+  color: white;
 }

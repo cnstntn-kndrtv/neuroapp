@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "monitor": "DEBUG=app:* nodemon app.js"
+    "start": "electron .",
+    "debug": "DEBUG=app:* electron ."
   },
   "repository": {
     "type": "git",
@@ -19,18 +19,12 @@
   },
   "homepage": "https://github.com/cnstntn-kndrtv/neuroapp#readme",
   "dependencies": {
-    "body-parser": "~1.15.2",
-    "cookie-parser": "~1.4.3",
     "d3": "^4.4.0",
-    "express": "~4.14.0",
-    "mindwave": "0.0.4",
-    "morgan": "~1.7.0",
     "node-neurosky": "0.0.1",
-    "pug": "~2.0.0-beta6",
-    "serve-favicon": "~2.3.0",
     "socket.io": "^1.6.0"
   },
   "devDependencies": {
+    "electron-reload": "^1.0.3",
     "nodemon": "^1.11.0",
     "debug": "~2.2.0"
   }

@@ -1,2 +1,2 @@
 # neuroapp
-🛠 neurosky mindwave test app
+🛠 neurosky mindwave test electron app 🤘
