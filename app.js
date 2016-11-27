@@ -28,13 +28,21 @@ const DEBUG = (process.env.DEBUG) ? true : false;
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
+    titel: 'my neuro app',
     width: 500,
     height: 200,
+    resizable: true,
+    center: true,
     //frame: false,
     //titleBarStyle: 'hidden',
     transparent: true,
-    show: false
+    show: false,
+    //icon: '/Users/somebody/images/window.png'
   });
+
+  app.dock.setIcon('./public/images/1.icns')
+  //win.setProgressBar(-1);
+
   // Open the DevTools in DEBUG mode
   if (DEBUG) win.webContents.openDevTools();
 
