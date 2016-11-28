@@ -4,6 +4,7 @@
   "description": "neurosky mindwave test app",
   "main": "app.js",
   "scripts": {
+    "postinstall": "sh postinstall.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "debug": "DEBUG=app:* electron ."
@@ -19,17 +20,14 @@
   },
   "homepage": "https://github.com/cnstntn-kndrtv/neuroapp#readme",
   "dependencies": {
-    "active-window": "^0.1.0",
-    "d3": "^4.4.0",
+    "active-window": "latest",
+    "bootstrap": "latest",
+    "electron": "latest",
+    "jquery": "latest",
     "node-neurosky": "0.0.1",
-    "react": "^15.4.1",
-    "react-desktop": "^0.2.14",
-    "react-dom": "^15.4.1",
-    "socket.io": "^1.6.0"
+    "pouchdb": "latest"
   },
   "devDependencies": {
-    "electron-reload": "^1.0.3",
-    "nodemon": "^1.11.0",
-    "debug": "~2.2.0"
+    "debug": "latest"
   }
 }

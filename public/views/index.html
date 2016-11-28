@@ -3,12 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <title>My neuro app!</title>
-    <link rel="stylesheet" type="text/css" href="../stylesheets/reset.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+    <link href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
-    <div class="graph" id="attention"></div>
-    <div class="graph" id="meditation"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <button type="button" class="btn btn-default">Get</button>
+          <button type="button" class="btn btn-large btn-danger">Clear DB</button>
+          
+        </div>    
+      </div>
+    </div>
     <script src="../javascripts/index.js"></script>
   </body>
 </html>

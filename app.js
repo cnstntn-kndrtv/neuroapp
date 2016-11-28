@@ -8,23 +8,11 @@ const path = require('path');
 const url = require('url');
 const debug = require('debug')('app:server');
 
-// reload on source change
-// require('electron-reload')(__dirname, {
-//   electron: require('electron-prebuilt')
-// });
-
-// headset
-const neurosky = require('node-neurosky');
-const headset = neurosky.createClient({
-  appName: 'neuroapp',
-  appKey: '1234567890abcdef...'
-});
-headset.connect();
+const IS_DEBUG = (process.env.DEBUG) ? true : false;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-const DEBUG = (process.env.DEBUG) ? true : false;
 
 function createWindow() {
   // Create the browser window.
@@ -36,7 +24,7 @@ function createWindow() {
     center: true,
     //frame: false,
     //titleBarStyle: 'hidden',
-    transparent: true,
+    //transparent: true,
     show: false,
     //icon: __dirname + '/1.icns'
   });
@@ -44,7 +32,7 @@ function createWindow() {
   app.dock.setIcon(__dirname + '/public/images/brain.png');
 
   // Open the DevTools in DEBUG mode
-  if (DEBUG) win.webContents.openDevTools();
+  if (IS_DEBUG) win.webContents.openDevTools();
 
   // show when ready
   win.once('ready-to-show', () => {
@@ -58,38 +46,15 @@ function createWindow() {
     slashes: true
   }));
 
-  // Send headset data
-  // headset.on('data', (data) => {
-  //   console.log(data);
-  //   win.webContents.send('data', data);
-  //   //ipc.sendSync('data', data);
-  // });
-
   function updateIcon(attentionLevel, meditationLevel) {
-    win.setProgressBar(data.eSense.attention / 100);
+    win.setProgressBar(attentionLevel / 100);
     //app.setBadgeCount(meditationLevel);
   }
 
-  // test data send
-  function getRandom(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
-
-  let data;
-  let iconFile;
-
-  let timerId = setInterval(() => {
-    data = {
-      eSense: {
-        attention: getRandom(1, 100),
-        meditation: getRandom(1, 100)
-      }
-    }
-  
-    updateIcon(data.eSense.attention, data.eSense.meditation);
-    
-    win.webContents.send('data', data);
-  }, 1000);
+  ipc.on('update icon', (event, data) => {
+    if (IS_DEBUG) console.log(data);
+    updateIcon(data.attention, data.meditation);
+  })
 
   // Emitted when the window is closed.
   win.on('closed', () => {
