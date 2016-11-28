@@ -1,6 +1,7 @@
 const {
   app,
   BrowserWindow,
+  // !!!!!! IPC
 } = require('electron');
 const ipc = require('electron').ipcMain;
 const path = require('path');
@@ -37,11 +38,10 @@ function createWindow() {
     //titleBarStyle: 'hidden',
     transparent: true,
     show: false,
-    //icon: '/Users/somebody/images/window.png'
+    //icon: __dirname + '/1.icns'
   });
 
-  app.dock.setIcon('./public/images/1.icns')
-  //win.setProgressBar(-1);
+  app.dock.setIcon(__dirname + '/public/images/brain.png');
 
   // Open the DevTools in DEBUG mode
   if (DEBUG) win.webContents.openDevTools();
@@ -58,11 +58,38 @@ function createWindow() {
     slashes: true
   }));
 
-  headset.on('data', (data) => {
-    console.log(data);
+  // Send headset data
+  // headset.on('data', (data) => {
+  //   console.log(data);
+  //   win.webContents.send('data', data);
+  //   //ipc.sendSync('data', data);
+  // });
+
+  function updateIcon(attentionLevel, meditationLevel) {
+    win.setProgressBar(data.eSense.attention / 100);
+    //app.setBadgeCount(meditationLevel);
+  }
+
+  // test data send
+  function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  let data;
+  let iconFile;
+
+  let timerId = setInterval(() => {
+    data = {
+      eSense: {
+        attention: getRandom(1, 100),
+        meditation: getRandom(1, 100)
+      }
+    }
+  
+    updateIcon(data.eSense.attention, data.eSense.meditation);
+    
     win.webContents.send('data', data);
-    ipc.sendSync('data', data);
-  });
+  }, 1000);
 
   // Emitted when the window is closed.
   win.on('closed', () => {

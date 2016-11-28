@@ -6,7 +6,7 @@ let attentionGraph = document.getElementById('attention');
 let meditationGraph = document.getElementById('meditation');
 
 ipc.on('data', (event, data) => {
-    updateGraph(data);
+    //updateGraph(data);
     if (DEBUG) console.log(data);
 });
 
