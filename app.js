@@ -1,7 +1,7 @@
 const {
   app,
   BrowserWindow,
-  // !!!!!! IPC
+  Menu
 } = require('electron');
 const ipc = require('electron').ipcMain;
 const path = require('path');
@@ -36,7 +36,7 @@ function createWindow() {
 
   // show when ready
   win.once('ready-to-show', () => {
-    win.show();
+    if (IS_DEBUG) win.show();
   });
 
   // and load the index.html of the app.
@@ -46,15 +46,69 @@ function createWindow() {
     slashes: true
   }));
 
-  function updateIcon(attentionLevel, meditationLevel) {
-    win.setProgressBar(attentionLevel / 100);
-    //app.setBadgeCount(meditationLevel);
+  const dockMenuRecording = Menu.buildFromTemplate([{
+    label: '⏸ pause record',
+    click() {
+      debug('Stop');
+      stoptRecording();
+    }
+  }]);
+
+  const dockMenuStopped = Menu.buildFromTemplate([{
+    label: '🔴 Start record',
+    click() {
+      debug('Start');
+      startRecording();
+    }
+  }]);
+
+  const dockMenuDisabled = Menu.buildFromTemplate([]);
+
+  let isRecording = false;
+  app.dock.setMenu(dockMenuStopped);
+
+  function startRecording() {
+    if (!isRecording) {
+      isRecording = true;
+    }
+    win.webContents.send('start recording');
+    app.dock.setBadge(' ');
+    app.dock.setMenu(dockMenuRecording);
   }
 
-  ipc.on('update icon', (event, data) => {
-    if (IS_DEBUG) console.log(data);
-    updateIcon(data.attention, data.meditation);
-  })
+  function stoptRecording() {
+    if (isRecording) {
+      isRecording = false;
+    }
+    win.webContents.send('stop recording');
+    app.dock.setBadge('');
+    app.dock.setMenu(dockMenuStopped);
+  }
+
+  ipc.on('update bar', (event, data) => {
+    debug(data);
+    win.setProgressBar(data / 100);
+  });
+
+  let isHeadSetConnected;
+  ipc.on('headset connected', (event, data) => {
+    debug('headset connected');
+    if (isRecording) {
+      startRecording();
+    } else {
+      stoptRecording();
+    }
+  });
+
+  ipc.on('headset disconnected', (event, data) => {
+    debug('headset disconnected');
+    if (isHeadSetConnected) {
+      isHeadSetConnected = false;
+    }
+    win.setProgressBar(-1);
+    app.dock.setBadge('---');
+    app.dock.setMenu(dockMenuDisabled);
+  });
 
   // Emitted when the window is closed.
   win.on('closed', () => {
