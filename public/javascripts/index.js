@@ -3,12 +3,20 @@ const db = require('../javascripts/db');
 const activeWindowMonitor = require('active-window');
 
 // headset
-const headset = require('node-neurosky').createClient({
+const headset = require('../javascripts/neurosky').createClient({
     appName: 'neuroapp',
     appKey: '1234567890abcdef...'
 });
 let isRealData = true;
-headset.connect();
+
+headset.connect(() => {
+    // ok
+
+}, () => {
+    // connection error
+    isRealData ? ipc.send('headset disconnected') : true;
+    console.log('Headset connection error');
+});
 
 //debugger;
 
@@ -36,7 +44,7 @@ let activeWindow;
 let isHeadsetConnected;
 
 function operate(data) {
-    if(IS_DEBUG) console.log(data);
+    if (IS_DEBUG) console.log(data);
     if (data.poorSignalLevel != 200) {
         if (!isHeadsetConnected) {
             ipc.send('headset connected');
@@ -68,33 +76,44 @@ function operate(data) {
 }
 
 // Send headset or test data
-if (isRealData) {
-    headset.on('data', (data) => {
-        operate(data);
-    });
-} else {
-    let getRandom = function (min, max) {
-        return Math.floor(Math.random() * (max - min)) + min;
-    }
-    let data;
-    let timerId = setInterval(() => {
-        data = {
-            poorSignalLevel: 0,
-            eSense: {
-                attention: getRandom(1, 100),
-                meditation: getRandom(1, 100)
-            },
+function main() {
+    if (isRealData) {
+        headset.on('data', (data) => {
+            operate(data);
+        });
+    } else {
+        let getRandom = function (min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
         }
+        let data;
+        let timerId = setInterval(() => {
+            data = {
+                poorSignalLevel: 0,
+                eSense: {
+                    attention: getRandom(1, 100),
+                    meditation: getRandom(1, 100)
+                },
+            }
 
-        if (fakeSignal) data.poorSignalLevel = 0;
-        else data.poorSignalLevel = 200;
-        operate(data);
-    }, 3000);
+            if (isFakeSignalActive) data.poorSignalLevel = 0;
+            else data.poorSignalLevel = 200;
+            operate(data);
+        }, 3000);
+    }
 }
-let fakeSignal = true;
 
-function changeFakeSignal() {
-    fakeSignal = !fakeSignal;
+
+let isFakeSignalActive = true;
+
+function swichFakeSignal() {
+    isFakeSignalActive = !isFakeSignalActive;
+    console.log('isFakeSignalActive', isFakeSignalActive);
+}
+
+function changeSignalSource() {
+    isRealData = !isRealData;
+    console.log('isRealData', isRealData);
+    main();
 }
 // active window
 let aw = {
