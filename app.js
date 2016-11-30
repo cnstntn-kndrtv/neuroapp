@@ -26,7 +26,7 @@ if (shouldQuit) {
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    titel: 'my neuro app',
+    title: 'my neuro app',
     width: 500,
     height: 500,
     resizable: true,

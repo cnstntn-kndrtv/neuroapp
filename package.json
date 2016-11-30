@@ -8,6 +8,7 @@
     "start": "electron .",
     "debug": "DEBUG=app:* electron .",
     "pack": "build --dir",
+    "debug-pack": "DEBUG=app:* open dist/mac/neuroapp.app",
     "dist": "build",
     "postinstall": "install-app-deps"
   },

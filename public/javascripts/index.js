@@ -68,7 +68,7 @@ let time
     , isData;
 
 function operate(data) {
-    //if (IS_DEBUG) console.log('poorSignalLevel', data.poorSignalLevel);
+    if (IS_DEBUG) console.log('poorSignalLevel', data.poorSignalLevel);
     if (data.poorSignalLevel != 200) {
         if (!isData) {
             ipc.send('headset connected');
@@ -86,7 +86,11 @@ function operate(data) {
         if (isRecording) {
             time = getTime();
             activeWindow = getActiveWindow();
-            //if (IS_DEBUG) console.log(data, activeWindow.app);
+            if (IS_DEBUG) {
+                console.log('data', data);
+                console.log('activeWindow.app', activeWindow.app);
+                console.log('activeWindow.title', activeWindow.title);
+            }
 
             // ["time", "app", "window title", "attention", "meditation", 'blink'];
             blink = data.blinkStrength || 0;
