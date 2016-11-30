@@ -2,25 +2,44 @@ const ipc = require('electron').ipcRenderer;
 const db = require('../javascripts/db');
 const activeWindowMonitor = require('active-window');
 
+//debugger;
+const IS_DEBUG = (process.env.DEBUG) ? true : false;
+
 // headset
 const headset = require('../javascripts/neurosky').createClient({
     appName: 'neuroapp',
     appKey: '1234567890abcdef...'
 });
-let isRealData = true;
 
-headset.connect(() => {
-    // ok
+// connect headset
+function connect() {
+    return new Promise((resolve, reject) => {
+        headset.connect(() => {
+            // connected
+            console.log('headset connected');
+            ipc.send('headset connected');
+            let myNotification = new Notification('✅', {
+                body: 'connected'
+            });
+            console.log('--- wait for data from headset');
+            headset.on('data', (data) => {
+                operate(data);
+            });
+            resolve();
+        }, () => {
+            // connection error
+            ipc.send('headset disconnected');
+            console.log('Headset connection error');
+            let myNotification = new Notification('❌', {
+                body: 'connection error'
+            });
+            //reject();
+        });
+    });
+}
 
-}, () => {
-    // connection error
-    isRealData ? ipc.send('headset disconnected') : true;
-    console.log('Headset connection error');
-});
-
-//debugger;
-
-const IS_DEBUG = (process.env.DEBUG) ? true : false;
+ipc.send('headset disconnected');
+connect();
 
 let isRecording = false;
 
@@ -38,37 +57,45 @@ ipc.on('stop recording', (event, data) => {
     isRecording = false;
 });
 
+ipc.on('reconnect headset', (event, data) => {
+    connect();
+});
 
-let time;
-let activeWindow;
-let isHeadsetConnected;
+
+let time
+    , activeWindow
+    , blink
+    , isData;
 
 function operate(data) {
-    if (IS_DEBUG) console.log(data);
+    //if (IS_DEBUG) console.log('poorSignalLevel', data.poorSignalLevel);
     if (data.poorSignalLevel != 200) {
-        if (!isHeadsetConnected) {
+        if (!isData) {
             ipc.send('headset connected');
-            isHeadsetConnected = true;
+            isData = true;
         }
     }
     if (data.poorSignalLevel == 200) {
-        if (isHeadsetConnected) {
-            ipc.send('headset disconnected');
-            isHeadsetConnected = false;
+        if (isData || isData == undefined) {
+            console.log('no data');
+            ipc.send('headset no data');
+            isData = false;
         }
     }
-    if (isHeadsetConnected) {
+    if (isData) {
         if (isRecording) {
             time = getTime();
             activeWindow = getActiveWindow();
-            if (IS_DEBUG) console.log(data, activeWindow.app);
+            //if (IS_DEBUG) console.log(data, activeWindow.app);
 
-            // ["time", "app", "window title", "attention", "meditation"];
+            // ["time", "app", "window title", "attention", "meditation", 'blink'];
+            blink = data.blinkStrength || 0;
             db.put([time,
                 activeWindow.app,
                 activeWindow.title,
                 data.eSense.attention,
-                data.eSense.meditation
+                data.eSense.meditation,
+                blink
             ]);
         }
         ipc.send('update bar', data.eSense.attention);
@@ -77,11 +104,7 @@ function operate(data) {
 
 // Send headset or test data
 function main() {
-    if (isRealData) {
-        headset.on('data', (data) => {
-            operate(data);
-        });
-    } else {
+    if (!isRealData) {
         let getRandom = function (min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
         }
@@ -102,19 +125,6 @@ function main() {
     }
 }
 
-
-let isFakeSignalActive = true;
-
-function swichFakeSignal() {
-    isFakeSignalActive = !isFakeSignalActive;
-    console.log('isFakeSignalActive', isFakeSignalActive);
-}
-
-function changeSignalSource() {
-    isRealData = !isRealData;
-    console.log('isRealData', isRealData);
-    main();
-}
 // active window
 let aw = {
     app: '',
@@ -150,4 +160,20 @@ function getTime() {
     sec = (sec < 10 ? "0" : "") + sec;
 
     return `${hour}:${min}:${sec}`;
+}
+
+
+// debug helpers
+let isRealData = true;
+let isFakeSignalActive = true;
+
+function swichFakeSignal() {
+    isFakeSignalActive = !isFakeSignalActive;
+    console.log('isFakeSignalActive', isFakeSignalActive);
+}
+
+function changeSignalSource() {
+    isRealData = !isRealData;
+    console.log('isRealData', isRealData);
+    main();
 }

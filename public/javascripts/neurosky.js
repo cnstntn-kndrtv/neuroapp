@@ -39,7 +39,7 @@ NeuroSkyClient.prototype.connect = function(onSuccess, onError) {
     var netSocket = new net.Socket()
     self.auth.appKey = makeKey();
     self.auth.appName = makeName(self.auth.appName);
-    console.log(self.auth);
+    //console.log(self.auth);
     var client = this.client = netSocket.connect(this.port, this.host, function() {
         client.write(JSON.stringify(self.auth));
         if (onSuccess && typeof(onSuccess) === "function") {

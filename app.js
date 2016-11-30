@@ -14,12 +14,21 @@ const IS_DEBUG = (process.env.DEBUG) ? true : false;
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
+// single instance of app
+const shouldQuit = app.makeSingleInstance((argv, workingDirectory) => {
+  //
+});
+
+if (shouldQuit) {
+  app.quit();
+}
+
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     titel: 'my neuro app',
     width: 500,
-    height: 200,
+    height: 500,
     resizable: true,
     center: true,
     //frame: false,
@@ -46,6 +55,7 @@ function createWindow() {
     slashes: true
   }));
 
+  // docke menus
   const dockMenuRecording = Menu.buildFromTemplate([{
     label: '⏸ pause record',
     click() {
@@ -62,10 +72,17 @@ function createWindow() {
     }
   }]);
 
-  const dockMenuDisabled = Menu.buildFromTemplate([]);
+  const dockMenuDisabled = Menu.buildFromTemplate([{
+    label: '🛠 reconnect',
+    click() {
+      debug('reconnect');
+      win.webContents.send('reconnect headset');
+    }
+  }]);
 
   let isRecording = false;
-  app.dock.setMenu(dockMenuStopped);
+  let isHeadSetConnected;
+  //setDisconnectedState();
 
   function startRecording() {
     if (!isRecording) {
@@ -85,29 +102,48 @@ function createWindow() {
     app.dock.setMenu(dockMenuStopped);
   }
 
-  ipc.on('update bar', (event, data) => {
-    debug(data);
-    win.setProgressBar(data / 100);
-  });
-
-  let isHeadSetConnected;
-  ipc.on('headset connected', (event, data) => {
+  function setConnectedState() {
     debug('headset connected');
     if (isRecording) {
       startRecording();
     } else {
       stoptRecording();
     }
+  }
+
+  function setDisconnectedState() {
+    debug('headset disconnected');
+    // if (isHeadSetConnected) {
+    //   isHeadSetConnected = false;
+    // }
+    win.setProgressBar(-1);
+    app.dock.setBadge('💀');
+    app.dock.setMenu(dockMenuDisabled);
+  }
+
+  function setNoDataState() {
+    debug('headset no data');
+    win.setProgressBar(-1);
+    app.dock.setBadge('NO DATA');
+    app.dock.setMenu(dockMenuDisabled);
+  }
+
+  ipc.on('update bar', (event, data) => {
+    debug(data);
+    win.setProgressBar(data / 100);
+  });
+
+  ipc.on('headset connected', (event, data) => {
+    console.log('+');
+    setConnectedState();
   });
 
   ipc.on('headset disconnected', (event, data) => {
-    debug('headset disconnected');
-    if (isHeadSetConnected) {
-      isHeadSetConnected = false;
-    }
-    win.setProgressBar(-1);
-    app.dock.setBadge('---');
-    app.dock.setMenu(dockMenuDisabled);
+    setDisconnectedState();
+  });
+
+  ipc.on('headset no data', (event, data) => {
+    setNoDataState();
   });
 
   // Emitted when the window is closed.

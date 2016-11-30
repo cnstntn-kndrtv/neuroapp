@@ -1,9 +1,11 @@
-var fs = require('fs');
+const fs = require('fs');
 
-let header = ["time", "app", "window title", "attention", "meditation"];
-let separator = ";";
+const header = ["time", "app", "window title", "attention", "meditation", 'blink strength'];
+const separator = ";";
+const userDocDir = require('electron').remote.app.getPath('documents');
 
-let dbDir = __dirname + '/../../data'
+const dbDir = userDocDir + '/neurodata';
+
 createDBFolder(dbDir);
 
 let dbFile = getDate() + '.csv';
@@ -12,6 +14,7 @@ createDBFile(`${dbDir}/${dbFile}`);
 function createDBFolder(dir) {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
+        console.log('DB dir created:', dir);
     }
 }
 

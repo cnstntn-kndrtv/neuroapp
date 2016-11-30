@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "debug": "DEBUG=app:* electron ."
+    "debug": "DEBUG=app:* electron .",
+    "pack": "build --dir",
+    "dist": "build",
+    "postinstall": "install-app-deps"
   },
   "repository": {
     "type": "git",
@@ -20,9 +23,18 @@
   "homepage": "https://github.com/cnstntn-kndrtv/neuroapp#readme",
   "dependencies": {
     "active-window": "latest",
-    "node-neurosky": "0.0.1"
+    "debug": "latest"
   },
   "devDependencies": {
-    "debug": "latest"
+    "electron-builder": "latest",
+    "electron-packager": "latest",
+    "electron-prebuilt": "latest"
+  },
+  "build": {
+    "appId": "myid",
+    "mac": {
+      "target": "default",
+      "icon": "public/images/brain.icns"
+    }
   }
 }
