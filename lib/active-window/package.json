@@ -1,0 +1,80 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "active-window@latest",
+        "scope": null,
+        "escapedName": "active-window",
+        "name": "active-window",
+        "rawSpec": "latest",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/constantin/Desktop/neuroapp"
+    ]
+  ],
+  "_from": "active-window@latest",
+  "_id": "active-window@0.1.0",
+  "_inCache": true,
+  "_location": "/active-window",
+  "_nodeVersion": "6.2.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/active-window-0.1.0.tgz_1465849249649_0.1145990383811295"
+  },
+  "_npmUser": {
+    "name": "octalmage",
+    "email": "jason@stallin.gs"
+  },
+  "_npmVersion": "3.8.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "active-window@latest",
+    "scope": null,
+    "escapedName": "active-window",
+    "name": "active-window",
+    "rawSpec": "latest",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/active-window/-/active-window-0.1.0.tgz",
+  "_shasum": "1b986b950293eb0577fb83966f44db62de1a7593",
+  "_shrinkwrap": null,
+  "_spec": "active-window@latest",
+  "_where": "/Users/constantin/Desktop/neuroapp",
+  "contributors": [
+    {
+      "name": "Jason Stallings",
+      "email": "jason@stallin.gs"
+    },
+    {
+      "name": "Robson Vieira",
+      "email": "robsonvnasc@gmail.com"
+    }
+  ],
+  "dependencies": {},
+  "description": "Get active window title.",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "1b986b950293eb0577fb83966f44db62de1a7593",
+    "tarball": "https://registry.npmjs.org/active-window/-/active-window-0.1.0.tgz"
+  },
+  "gitHead": "4921b35d19d768c02f79c56f638fde12f62eb288",
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "octalmage",
+      "email": "jason@stallin.gs"
+    }
+  ],
+  "name": "active-window",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {},
+  "version": "0.1.0"
+}

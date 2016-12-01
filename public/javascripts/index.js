@@ -1,12 +1,12 @@
 const ipc = require('electron').ipcRenderer;
-const db = require('../javascripts/db');
-const activeWindowMonitor = require('active-window');
+const db = require('../../lib/db');
+const activeWindowMonitor = require('../../lib/active-window');
 
 //debugger;
 const IS_DEBUG = (process.env.DEBUG) ? true : false;
 
 // headset
-const headset = require('../javascripts/neurosky').createClient({
+const headset = require('../../lib/neurosky').createClient({
     appName: 'neuroapp',
     appKey: '1234567890abcdef...'
 });
