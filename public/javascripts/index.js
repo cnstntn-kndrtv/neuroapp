@@ -2,6 +2,15 @@ const ipc = require('electron').ipcRenderer;
 const db = require('../../lib/db');
 const activeWindowMonitor = require('../../lib/active-window');
 
+const IS_BUILD = require('../../lib/env').IS_BUILD;
+
+if ( IS_BUILD ) {
+    activeWindowMonitor.init(__dirname + '/../../lib/config-prod.json');
+}
+else {
+    activeWindowMonitor.init(__dirname + '/../../lib/config-dev.json');
+}
+
 //debugger;
 const IS_DEBUG = (process.env.DEBUG) ? true : false;
 

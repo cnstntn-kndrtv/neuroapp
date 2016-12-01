@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "debug": "DEBUG=app:* electron .",
-    "pack": "sh pack.sh",
-    "debug-pack": "DEBUG=app:* open dist/mac/neuroapp.app",
+    "build": "sh build.sh",
+    "debug-build": "DEBUG=app:* open dist/mac/neuroapp.app",
     "postinstall": "install-app-deps"
   },
   "repository": {
