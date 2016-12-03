@@ -25,7 +25,7 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
-dist/
+dist
 
 # Dependency directories
 node_modules
@@ -36,3 +36,16 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# IDE
+.vscode
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

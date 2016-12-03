@@ -8,7 +8,14 @@ const path = require('path');
 const url = require('url');
 const debug = require('debug')('app:server');
 
-const IS_DEBUG = (process.env.DEBUG) ? true : false;
+// dev mode
+const isDev = require('electron-is-dev');
+
+// global variables
+global.globalVars = {
+  IS_DEV: isDev,
+  IS_DEBUG: (process.env.DEBUG) ? true : false,
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -38,14 +45,14 @@ function createWindow() {
     //icon: __dirname + '/1.icns'
   });
 
-  app.dock.setIcon(__dirname + '/public/images/brain.png');
+  if (global.globalVars.IS_DEV) app.dock.setIcon(__dirname + '/public/images/brain.png');
 
   // Open the DevTools in DEBUG mode
-  if (IS_DEBUG) win.webContents.openDevTools();
+  if (global.globalVars.IS_DEBUG) win.webContents.openDevTools();
 
   // show when ready
   win.once('ready-to-show', () => {
-    if (IS_DEBUG) win.show();
+    if (global.globalVars.IS_DEBUG) win.show();
   });
 
   // and load the index.html of the app.

@@ -8,8 +8,7 @@
     "start": "electron .",
     "debug": "DEBUG=app:* electron .",
     "build": "sh build.sh",
-    "debug-build": "DEBUG=app:* open dist/mac/neuroapp.app",
-    "postinstall": "install-app-deps"
+    "debug-build": "DEBUG=app:* open dist/mac/neuroapp.app"
   },
   "repository": {
     "type": "git",
@@ -23,7 +22,8 @@
   "homepage": "https://github.com/cnstntn-kndrtv/neuroapp#readme",
   "dependencies": {
     "active-window": "latest",
-    "debug": "latest"
+    "debug": "latest",
+    "electron-is-dev": "latest"
   },
   "devDependencies": {
     "electron-builder": "latest",

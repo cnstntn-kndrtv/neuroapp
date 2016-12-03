@@ -1,18 +1,19 @@
 const ipc = require('electron').ipcRenderer;
-const db = require('../../lib/db');
+const db = require('../../lib/csv-db');
 const activeWindowMonitor = require('../../lib/active-window');
+const remote = require('electron').remote;
 
-const IS_BUILD = require('../../lib/env').IS_BUILD;
+// dev mode
+const IS_DEV = remote.getGlobal('globalVars').IS_DEV;
 
-if ( IS_BUILD ) {
+if (!IS_DEV) {
     activeWindowMonitor.init(__dirname + '/../../lib/config-prod.json');
-}
-else {
+} else {
     activeWindowMonitor.init(__dirname + '/../../lib/config-dev.json');
 }
 
 //debugger;
-const IS_DEBUG = (process.env.DEBUG) ? true : false;
+const IS_DEBUG = remote.getGlobal('globalVars').IS_DEBUG;
 
 // headset
 const headset = require('../../lib/neurosky').createClient({
@@ -20,9 +21,17 @@ const headset = require('../../lib/neurosky').createClient({
     appKey: '1234567890abcdef...'
 });
 
+// init db
+const userDocDir = require('electron').remote.app.getPath('documents');
+const dbDir = userDocDir + '/neurodata';
+const dbHeader = ["time", "app", "window title", "attention", "meditation", 'blink strength'];
+db.init(dbDir, dbHeader, (e) => {
+    if (e) console.log(e)
+});
+
 // connect headset
 function connect() {
-    return new Promise((resolve, reject) => {
+    //return new Promise((resolve, reject) => {
         headset.connect(() => {
             // connected
             console.log('headset connected');
@@ -34,7 +43,7 @@ function connect() {
             headset.on('data', (data) => {
                 operate(data);
             });
-            resolve();
+            //resolve();
         }, () => {
             // connection error
             ipc.send('headset disconnected');
@@ -44,7 +53,7 @@ function connect() {
             });
             //reject();
         });
-    });
+    //});
 }
 
 ipc.send('headset disconnected');
@@ -71,10 +80,7 @@ ipc.on('reconnect headset', (event, data) => {
 });
 
 
-let time
-    , activeWindow
-    , blink
-    , isData;
+let time, activeWindow, blink, isData;
 
 function operate(data) {
     if (IS_DEBUG) console.log('poorSignalLevel', data.poorSignalLevel);
@@ -96,12 +102,11 @@ function operate(data) {
             time = getTime();
             activeWindow = getActiveWindow();
             if (IS_DEBUG) {
-                console.log('data', data);
+                //console.log('data', data);
                 console.log('activeWindow.app', activeWindow.app);
                 console.log('activeWindow.title', activeWindow.title);
             }
 
-            // ["time", "app", "window title", "attention", "meditation", 'blink'];
             blink = data.blinkStrength || 0;
             db.put([time,
                 activeWindow.app,
@@ -109,7 +114,9 @@ function operate(data) {
                 data.eSense.attention,
                 data.eSense.meditation,
                 blink
-            ]);
+            ], (e) => {
+                if (e) console.log(e)
+            });
         }
         ipc.send('update bar', data.eSense.attention);
     }
