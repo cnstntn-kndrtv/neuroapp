@@ -3,6 +3,8 @@ const db = require('../../lib/csv-db');
 const activeWindowMonitor = require('../../lib/active-window');
 const remote = require('electron').remote;
 
+// TODO db proxy!
+
 // dev mode
 const IS_DEV = remote.getGlobal('globalVars').IS_DEV;
 
