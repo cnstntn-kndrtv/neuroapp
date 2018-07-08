@@ -1,4 +1,7 @@
 # neuroapp 🛠
+
+![Yo](/public/images/brain.png)
+
 Test Neurosky mindwave MAC OS electron app.  
 Saves active window, headset data in `~/Documents/neurodata/*.csv` files.
 
