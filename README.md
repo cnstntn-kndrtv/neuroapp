@@ -1,6 +1,6 @@
 # neuroapp 🛠
 
-![Yo](/public/images/BEF8595C-09BB-40FA-A300-3EFD199A50E7.jpeg)
+![Yo](/public/images/BEF8595C-09BB-40FA-A300-3EFD199A50E7.jpeg =250*250 )
 
 Test Neurosky mindwave MAC OS electron app.  
 Saves active window, headset data in `~/Documents/neurodata/*.csv` files.
